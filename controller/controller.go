@@ -11,25 +11,35 @@ import (
 	"net/http"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	logger "go-login/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
+
+/*
+* POST API for user registration
+* Input : body {username, firstname, lastname & password}
+* Proccess : 1. Check if user alreday exist or not. 2. Encrypt hte passsword. 3. Save user details to database
+* Output : User registered successfully if there is no Error Occurred.
+ */
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println("Reached Here")
-	var user model.User
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &user)
-	var res model.ResponseResult
+
+	var user model.User                //geting User model from model structure
+	body, _ := ioutil.ReadAll(r.Body)  //
+	err := json.Unmarshal(body, &user) //parsing body input to user variable
+	var res model.ResponseResult       //getting response model from model structure
 	if err != nil {
 		res.Error = err.Error()
 		json.NewEncoder(w).Encode(res)
+		logger.ErrorLogger.Println("Error occurred " + res.Error) //sending error as response message
 		return
 	}
 
-	collection, err := db.GetDBCollection()
+	collection, err := db.GetDBCollection() //getdbCollection function to connect database and create table
 
 	if err != nil {
 		res.Error = err.Error()
@@ -41,6 +51,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
+			logger.ErrorLogger.Println("No documents in result")
 			hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 5)
 
 			if err != nil {
@@ -53,20 +64,24 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			_, err = collection.InsertOne(context.TODO(), user)
 			if err != nil {
 				res.Error = "Error While Creating User, Try Again"
+				logger.ErrorLogger.Println("Error While Creating User, Try Again")
 				json.NewEncoder(w).Encode(res)
 				return
 			}
 			res.Result = "Registration Successful"
+			logger.GeneralLogger.Println("Registration Successful")
 			json.NewEncoder(w).Encode(res)
 			return
 		}
 
 		res.Error = err.Error()
+		logger.ErrorLogger.Println(res)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
 
 	res.Result = "Username already Exists!!"
+	logger.ErrorLogger.Println("User already Exists")
 	json.NewEncoder(w).Encode(res)
 	return
 }
@@ -120,7 +135,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result.Token = tokenString
-	result.Password = ""
+	result.Password = "Can't be disclosed as it's confidential !!"
 
 	json.NewEncoder(w).Encode(result)
 

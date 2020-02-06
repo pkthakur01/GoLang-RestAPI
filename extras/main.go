@@ -13,9 +13,24 @@ type Article struct {
 	Content     string `json:"content"`
 }
 
+// mymap_1 := map[int]string{
+// 	12: "Prakash",
+// 	13: "WhoCares",
+// }
+
 type Atricles []Article
 
 func allArticles(w http.ResponseWriter, r *http.Request) {
+
+	map_2 := map[string]string{
+
+		"90": "Dog",
+		"91": "Cat",
+		"92": "Cow",
+		"93": "Bird",
+		"94": "Rabbit",
+	}
+	fmt.Println(map_2)
 	article := Atricles{
 		Article{Title: "Test Title", Description: "Nothing to say", Content: "Hello Prakash"},
 	}
@@ -33,6 +48,12 @@ func handleRequests() {
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
+func sayHello() {
+	fmt.Println("Hello Prakash Bhai")
+}
+
 func main() {
+	sayHello()
 	handleRequests()
+
 }

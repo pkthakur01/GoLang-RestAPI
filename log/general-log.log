@@ -1,0 +1,12 @@
+General Logger:	2020/02/06 12:28:53 main.go:21: Server Connected and Running at PORT 8081
+General Logger:	2020/02/06 12:33:41 main.go:21: Server Connected and Running at PORT 8081
+Error Logger:	2020/02/06 12:34:57 controller.go:46: No documents in result
+Error Logger:	2020/02/06 13:11:09 controller.go:30: Error occurredunexpected end of JSON input
+General Logger:	2020/02/06 13:11:50 main.go:21: Server Connected and Running at PORT 8081
+Error Logger:	2020/02/06 13:11:52 controller.go:30: Error occurred unexpected end of JSON input
+Error Logger:	2020/02/06 14:35:24 controller.go:30: Error occurred unexpected end of JSON input
+General Logger:	2020/02/06 14:40:26 main.go:21: Server Connected and Running at PORT 8081
+General Logger:	2020/02/06 15:09:22 main.go:21: Server Connected and Running at PORT 8081
+General Logger:	2020/02/06 15:10:33 main.go:21: Server Connected and Running at PORT 8081
+General Logger:	2020/02/06 15:10:59 main.go:21: Server Connected and Running at PORT 8081
+General Logger:	2020/02/06 18:26:36 main.go:21: Server Connected and Running at PORT 8081
