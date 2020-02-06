@@ -10,8 +10,9 @@ import (
 	"log"
 	"net/http"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	logger "go-login/utils"
+
+	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -86,6 +87,13 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+/*
+* POST API for user login
+* Input : body {username & password}
+* Proccess : 1. Check if user  exist or not. 2. Dencrypt tte passsword. 3. Generate Auth Token
+* Output : User logged in successfully if there is no Error Occurred.
+ */
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -147,18 +155,20 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			logger.ErrorLogger.Println("Unexpected signing method")
 			return nil, fmt.Errorf("Unexpected signing method")
 		}
 		return []byte("secret"), nil
 	})
 	var result model.User
 	var res model.ResponseResult
+	// verifying token and extracting value form token
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		result.Username = claims["username"].(string)
 		result.FirstName = claims["firstname"].(string)
 		result.LastName = claims["lastname"].(string)
 
-		json.NewEncoder(w).Encode(result)
+		json.NewEncoder(w).Encode(result) //sending value as json resposnse back to client
 		return
 	} else {
 		res.Error = err.Error()
